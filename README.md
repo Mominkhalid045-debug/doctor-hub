@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏥 Doctor Hub - Advanced Healthcare System
 
-## Getting Started
+Doctor Hub is a full-stack healthcare consultation and patient history management system. It allows patients to search for doctors by disease and treatment type (Allopathic, Homeopathic, Herbal) and manage their medical journey.
 
-First, run the development server:
+### 🌐 Live Project
+**[https://doctor-hub-olive.vercel.app](https://doctor-hub-olive.vercel.app)**
 
+---
+
+## 🔑 Demo Credentials
+Role-based access is implemented. Use the following to log in:
+- **Patient**: `john@patient.com` / `Patient@123`
+- **Doctor**: `sarah@doctorhub.com` / `Doctor@123`
+- **Admin**: `admin@doctorhub.com` / `Admin@123`
+- **Assistant**: `assistant@doctorhub.com` / `Assistant@123`
+- **Super Admin**: `superadmin@doctorhub.com` / `SuperAdmin@123`
+
+## 🛠️ Tech Stack
+- **Frontend**: Next.js 14, React, Custom CSS (Dark Theme, Glassmorphism)
+- **Backend**: Next.js API Routes, Prisma ORM, SQLite
+- **Authentication**: JWT, bcryptjs
+
+## 🧩 Key Features
+- **Doctor Search Engine**: Filter by disease, specialization, and treatment type.
+- **RBAC**: Custom dashboards and capabilities per user role.
+- **Immutable History**: Secure patient medical history.
+- **Appointment Booking**: Built-in scheduling system.
+
+## 🚀 How to Run Locally
+
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
+```
+3. Start the dev server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open `http://localhost:3000` to view the app!
