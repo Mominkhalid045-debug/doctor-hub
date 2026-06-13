@@ -46,12 +46,15 @@ export default function DoctorsPage() {
   const handleBookClick = (doctor) => {
     const userStr = localStorage.getItem('user')
     if (!userStr) {
-      alert('Please log in as a patient to book an appointment.')
+      window.location.href = '/login'
       return
     }
     const user = JSON.parse(userStr)
     if (user.role !== 'PATIENT') {
-      alert('Only patients can book appointments.')
+      setBookingError('Only patients can book appointments. Please log in with a patient account.')
+      // Still show the modal but with the error state so they understand why they can't book
+      setSelectedDoctor(doctor)
+      setBookingData({ date: '', time: '', reason: '' })
       return
     }
     setSelectedDoctor(doctor)
@@ -270,7 +273,7 @@ export default function DoctorsPage() {
                 
                 <div className="flex justify-end gap-3 mt-4">
                   <button type="button" className="btn btn-ghost" onClick={() => setSelectedDoctor(null)}>Cancel</button>
-                  <button type="submit" className="btn btn-primary" disabled={bookingLoading}>
+                  <button type="submit" className="btn btn-primary" disabled={bookingLoading || bookingError !== ''}>
                     {bookingLoading ? 'Booking...' : 'Request Appointment'}
                   </button>
                 </div>
