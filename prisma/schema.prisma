@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("PATIENT")
+  phone     String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  patient   Patient?
+  doctor    Doctor?
+  assistant Assistant?
+}
+
+model Patient {
+  id             String           @id @default(cuid())
+  userId         String           @unique
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dateOfBirth    String?
+  bloodGroup     String?
+  address        String?
+  emergencyPhone String?
+  createdAt      DateTime         @default(now())
+
+  appointments   Appointment[]
+  medicalHistory MedicalHistory[]
+  payments       Payment[]
+}
+
+model Doctor {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization  String
+  treatmentType   String
+  licenseNumber   String        @unique
+  experience      Int           @default(0)
+  consultationFee Float         @default(0)
+  bio             String?
+  diseases        String?       // JSON array of diseases treated
+  isVerified      Boolean       @default(false)
+  rating          Float         @default(0)
+  totalReviews    Int           @default(0)
+  createdAt       DateTime      @default(now())
+
+  clinics       Clinic[]
+  appointments  Appointment[]
+  assistants    Assistant[]
+  prescriptions Prescription[]
+}
+
+model Assistant {
+  id       String @id @default(cuid())
+  userId   String @unique
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  doctorId String
+  doctor   Doctor @relation(fields: [doctorId], references: [id])
+
+  payments Payment[]
+}
+
+model Clinic {
+  id       String @id @default(cuid())
+  doctorId String
+  doctor   Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  name     String
+  address  String
+  phone    String?
+  city     String?
+  isActive Boolean @default(true)
+
+  schedules Schedule[]
+}
+
+model Schedule {
+  id        String  @id @default(cuid())
+  clinicId  String
+  clinic    Clinic  @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  dayOfWeek Int     // 0 = Sunday, 6 = Saturday
+  startTime String  // "09:00"
+  endTime   String  // "17:00"
+  maxSlots  Int     @default(10)
+  isActive  Boolean @default(true)
+}
+
+model Appointment {
+  id        String            @id @default(cuid())
+  patientId String
+  patient   Patient           @relation(fields: [patientId], references: [id])
+  doctorId  String
+  doctor    Doctor            @relation(fields: [doctorId], references: [id])
+  date      String
+  time      String
+  status    String            @default("PENDING")
+  reason    String
+  notes     String?
+  createdAt DateTime          @default(now())
+
+  payment      Payment?
+  prescription Prescription?
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  appointmentId String        @unique
+  appointment   Appointment   @relation(fields: [appointmentId], references: [id])
+  patientId     String
+  patient       Patient       @relation(fields: [patientId], references: [id])
+  amount        Float
+  screenshot    String        // file path
+  status        String        @default("PENDING")
+  verifiedById  String?
+  assistant     Assistant?    @relation(fields: [verifiedById], references: [id])
+  verifiedAt    DateTime?
+  notes         String?
+  createdAt     DateTime      @default(now())
+}
+
+model MedicalHistory {
+  id          String   @id @default(cuid())
+  patientId   String
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  title       String
+  description String
+  diagnosis   String?
+  fileUrl     String?
+  addedBy     String?  // doctor userId who added this
+  createdAt   DateTime @default(now())
+  // Immutable — no updatedAt
+}
+
+model Prescription {
+  id            String      @id @default(cuid())
+  appointmentId String      @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  doctorId      String
+  doctor        Doctor      @relation(fields: [doctorId], references: [id])
+  medications   String      // JSON: [{name, dosage, frequency, duration}]
+  instructions  String
+  diagnosis     String?
+  followUpDate  String?
+  createdAt     DateTime    @default(now())
+  // Immutable — no updatedAt, patients cannot edit
+}
